@@ -34,7 +34,7 @@ async def help(ctx):
     await ctx.send(f"Hi {ctx.author.mention}. I have sent you a direct message with help info")
     await ctx.author.send(f"Hi {ctx.author.mention}. Here are the commands for Safe.TradeBot")
 
-    embed = discord.Embed(title="Bot commands for Safe.TradeBot", url="http://safe.trade", color=0x131afe)
+    embed = discord.Embed(title="Bot commands for Safe.TradeBot", url="https://safe.trade", color=0x131afe)
     embed.set_author(name="Safe.TradeBot", url="http://www.safecoin.org",
                      icon_url="https://safe.trade/assets/logo2-f90245b6bdcfa4f7582e36d0bc7c69d513934aa8c5a1c6cbc884ef91768bda00.png")
     embed.add_field(name="$markets", value="List all available markets on Safe.Trade", inline=False)
@@ -68,7 +68,7 @@ async def markets(ctx):
     await ctx.send(f"{ctx.author.mention} Here are the available markets for safe.trade")
 
     # https://cog-creators.github.io/discord-embed-sandbox/
-    embed = discord.Embed(title="Markets available on Safe.Trade", url="http://safe.trade", color=0x131afe)
+    embed = discord.Embed(title="Markets available on Safe.Trade", url="https://safe.trade", color=0x131afe)
     embed.set_author(name="Safe.TradeBot", url="http://www.safecoin.org",
                      icon_url="https://safe.trade/assets/logo2-f90245b6bdcfa4f7582e36d0bc7c69d513934aa8c5a1c6cbc884ef91768bda00.png")
     embed.add_field(name='Markets', value=output, inline=True)
@@ -262,7 +262,7 @@ def add_embeds(pair, buy, sell, high, low, last, vol, at):
     time = datetime.datetime.fromtimestamp(at).strftime('%Y-%m-%d %H:%M:%S')
 
     # https://cog-creators.github.io/discord-embed-sandbox/
-    embed = discord.Embed(title="Trade stats for " + pair, url="http://safe.trade", color=0x131afe)
+    embed = discord.Embed(title="Trade stats for " + pair, url="https://safe.trade", color=0x131afe)
     embed.set_author(name="Safe.TradeBot", url="http://www.safecoin.org",
                      icon_url="https://safe.trade/assets/logo2-f90245b6bdcfa4f7582e36d0bc7c69d513934aa8c5a1c6cbc884ef91768bda00.png")
     embed.add_field(name='Buy', value=buy, inline=True)
