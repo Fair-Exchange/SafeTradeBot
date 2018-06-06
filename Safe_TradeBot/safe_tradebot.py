@@ -307,4 +307,3 @@ async def update_bot_btc_price():
 
 # test bot id
 bot.run('id goes here')
-#test
