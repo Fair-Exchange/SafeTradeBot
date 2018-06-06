@@ -9,7 +9,9 @@ python3.6 -m pip install -U https://github.com/Rapptz/discord.py/archive/rewrite
 ```
 
 It may be necessary to downgrade yarl to run this bot
+```python
 python3.6 -m pip install -U "yarl<1.2"
+```
 
 To test and confirm it will work:
 ```python
