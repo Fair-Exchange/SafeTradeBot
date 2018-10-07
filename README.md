@@ -1,7 +1,7 @@
 # SafeTradeBot
 Discord trade data bot for Safe.Trade
 
-Requires Python 3.6
+Requires Python >= 3.6
 
 This bot uses discord.py rewrite library.
 ```
