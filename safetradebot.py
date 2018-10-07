@@ -2,6 +2,7 @@ import discord
 import requests
 import datetime
 import asyncio
+import re
 
 class Bot(discord.Client):
     def __init__(self, *args, **kwargs):
@@ -48,8 +49,8 @@ class Bot(discord.Client):
 
                 elif command.startswith('$'):
                     pair = message.content[1:]
-                    if not pair:
-                        return
+                    if not re.match(r'^[a-z]{6,}$', pair):
+                        await message.channel.send(f"{message.author.mention} Invalid market pair")
                     try:
                         response = requests.get('https://safe.trade/api/v2/tickers/{}'.format(pair))
                     except:
