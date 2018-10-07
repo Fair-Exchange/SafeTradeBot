@@ -76,7 +76,7 @@ class Bot(discord.Client):
                     embed.add_field(name='Low', value=ticker.get('low'), inline=True)
                     embed.add_field(name='24h Vol', value=ticker.get('vol'), inline=True)
                     embed.set_footer(text=f"data correct as of {time}")
-                    await message.channel.send(f"{message.author.mention} Here are the stats for {pair}", embed=embed)
+                    await message.channel.send("{} Here are the stats for {}".format(message.author.mention, market.get("name")), embed=embed)
 
     async def price_update(self):
         await self.wait_until_ready()
