@@ -5,10 +5,12 @@ import asyncio
 import re
 
 class Bot(discord.Client):
+    markets = {}
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.bg_task = self.loop.create_task(self.price_update())
+        self.bg_task2 = self.loop.create_task(self.markets_update())
 
     async def on_ready(self):
         print('Logged in as')
@@ -31,39 +33,40 @@ class Bot(discord.Client):
                     embed.add_field(name="$<market>", value="Trade stats for the market you choose ($safebtc for SAFE/BTC market, $xsgsafe for XSG/SAFE market and so on)", inline=False)
                     await message.author.send(f"Hi {message.author.mention}. Here are the commands for Safe.TradeBot", embed=embed)
                 elif command == "$markets":
-                    try:
-                        response = requests.get('https://safe.trade/api/v2/markets')
-                    except:
-                        await message.channel.send(f"{message.author.mention} Market data is unavailable at this time")
-                        return
-                    data = response.json()
-
                     if not isinstance(message.channel, discord.DMChannel):
                         await message.channel.send(f"Hi {message.author.mention}. I have sent you a direct message with market list")
 
                     embed = discord.Embed(title="Markets available on Safe.Trade", url="https://safe.trade", color=0x131afe)
                     embed.set_author(name="Safe.TradeBot", url="http://www.safecoin.org",
                                     icon_url="https://safe.trade/assets/logo2-f90245b6bdcfa4f7582e36d0bc7c69d513934aa8c5a1c6cbc884ef91768bda00.png")
-                    embed.add_field(name='Markets', value="\n".join(item.get('name') for item in data), inline=True)
+                    embed.add_field(name='Markets', value="\n".join(market.get("name") for market in self.markets), inline=True)
                     await message.author.send(f"{message.author.mention} Here are the available markets for safe.trade", embed=embed)
 
                 elif command.startswith('$'):
                     pair = message.content[1:]
-                    if not re.match(r'^[a-z]{6,}$', pair):
-                        await message.channel.send(f"{message.author.mention} Invalid market pair")
-                    try:
-                        response = requests.get('https://safe.trade/api/v2/tickers/{}'.format(pair))
-                    except:
-                        await message.channel.send(f"{message.author.mention} Trade data is unavailable at this time")
-                    data = response.json()
-                    if "error" in data:
+                    for market in self.markets:
+                        if pair in (market.get("id"), market.get("name").lower()):
+                            break
+                    else:
                         await message.channel.send(f"{message.author.mention} Market pair does not exist")
                         return
+                    try:
+                        response = requests.get('https://safe.trade/api/v2/tickers/{}'.format(market.get("id")))
+                    except:
+                        await message.channel.send(f"{message.author.mention} Trade data is unavailable at this time")
+                        return
+                    data = response.json()
                     ticker = data.get("ticker")
+                    try:
+                        response = requests.get('https://safe.trade/api/v2/k?market={}&period=15&limit=97'.format(market.get("id")))
+                    except:
+                        percentage = 0
+                    else:
+                        percentage = 100-100*response.json()[0][3]/float(ticker.get('last'))
 
                     time = datetime.datetime.fromtimestamp(data.get('at')).strftime('%Y-%m-%d %H:%M:%S')
 
-                    embed = discord.Embed(title=f"Trade stats for {pair}", url="https://safe.trade", color=0x131afe)
+                    embed = discord.Embed(title="{}\t{:+.2f}%".format(market.get("name"), percentage), url="https://safe.trade", color=0x131afe)
                     embed.set_author(name="Safe.TradeBot", url="http://www.safecoin.org",
                                     icon_url="https://safe.trade/assets/logo2-f90245b6bdcfa4f7582e36d0bc7c69d513934aa8c5a1c6cbc884ef91768bda00.png")
                     embed.add_field(name='Buy', value=ticker.get('buy'), inline=True)
@@ -87,6 +90,16 @@ class Bot(discord.Client):
             await self.change_presence(status=discord.Status.online,
                                        activity=discord.Game(name=f'SAFE/BTC: {data}'))
             await asyncio.sleep(120)
+
+    async def markets_update(self):
+        while not self.is_closed():
+            try:
+                response = requests.get('https://safe.trade/api/v2/markets')
+            except:
+                pass
+            else:
+                self.markets = response.json()
+            await asyncio.sleep(21600)
 
 client = Bot()
 client.run('TOKEN')
