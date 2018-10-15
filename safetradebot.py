@@ -69,7 +69,7 @@ class Bot(discord.Client):
 
                     time = datetime.datetime.fromtimestamp(data.get('at')).strftime('%Y-%m-%d %H:%M:%S')
 
-                    embed = discord.Embed(title="{}\t{:+.2f}%".format(market.get("name"), percentage), url="https://safe.trade", color=0x131afe)
+                    embed = discord.Embed(title=":arrow_{st}: {} :arrow_{st}:\t{:+.2f}%".format(market.get("name"), percentage, st="up" if percentage>= 0 else "down"), url="https://safe.trade", color=0x131afe)
                     embed.set_author(name="Safe.TradeBot", url="http://www.safecoin.org",
                                     icon_url="https://safe.trade/assets/logo2-f90245b6bdcfa4f7582e36d0bc7c69d513934aa8c5a1c6cbc884ef91768bda00.png")
                     embed.add_field(name='Buy', value=ticker.get('buy'), inline=True)
