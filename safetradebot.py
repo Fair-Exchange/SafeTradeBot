@@ -42,10 +42,13 @@ class Bot(discord.Client):
                     embed.add_field(name='Markets', value="\n".join(market.get("name") for market in self.markets), inline=True)
                     await message.author.send(f"{message.author.mention} Here are the available markets for safe.trade", embed=embed)
 
-                elif command.startswith('$'):
-                    pair = message.content[1:]
+                elif re.match(r"^\$[a-zA-Z]{3,}(?:\/?[a-zA-Z]{3,})?$", command):
+                    pair = message.content[1:].upper()
                     for market in self.markets:
-                        if pair in (market.get("id"), market.get("name").lower()):
+                        if pair in (market.get("name"),
+                                    market.get("name").replace("/", ""),
+                                    "/".join(market.get("name").split("/")[::-1]),
+                                    "".join(market.get("name").split("/")[::-1])):
                             break
                     else:
                         await message.channel.send(f"{message.author.mention} Market pair does not exist")
