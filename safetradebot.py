@@ -19,7 +19,7 @@ class Bot(discord.Client):
         print('------')
 
     async def on_message(self, message):
-        if isinstance(message.channel, discord.DMChannel) or message.channel.name in ('test', 'safetrade', 'bot-commands'):
+        if isinstance(message.channel, discord.DMChannel) or message.channel.name in ('test', 'safetrade', 'bots'):
             if message.content:
                 command = message.content.split()[0].lower()
                 if command == "$help":
@@ -39,7 +39,7 @@ class Bot(discord.Client):
                     embed = discord.Embed(title="Markets available on Safe.Trade", url="https://safe.trade", color=0x131afe)
                     embed.set_author(name="Safe.TradeBot", url="http://www.safecoin.org",
                                     icon_url="https://safe.trade/assets/logo2-f90245b6bdcfa4f7582e36d0bc7c69d513934aa8c5a1c6cbc884ef91768bda00.png")
-                    embed.add_field(name='Markets', value="\n".join(market.get("name") for market in self.markets), inline=True)
+                    embed.add_field(name='Markets', value="\n".join(sorted(market.get("name") for market in self.markets)), inline=True)
                     await message.author.send(f"{message.author.mention} Here are the available markets for safe.trade", embed=embed)
 
                 elif re.match(r"^\$[a-zA-Z]{3,}(?:\/?[a-zA-Z]{3,})?$", command):
@@ -105,4 +105,4 @@ class Bot(discord.Client):
             await asyncio.sleep(21600)
 
 client = Bot()
-client.run('TOKEN')
+client.run('NDk4NDM3ODIwODYwNTk2MjI1.DqYgsA.WEOoqpd7cQ5R1-K-gXvOwL4CS9o')
