@@ -41,7 +41,32 @@ class Bot(discord.Client):
                                     icon_url="https://safe.trade/assets/logo2-f90245b6bdcfa4f7582e36d0bc7c69d513934aa8c5a1c6cbc884ef91768bda00.png")
                     embed.add_field(name='Markets', value="\n".join(sorted(market.get("name") for market in self.markets)), inline=True)
                     await message.author.send(f"{message.author.mention} Here are the available markets for safe.trade", embed=embed)
-
+                elif command == "$votes":
+                    try:
+                        response = requests.get("https://vote.safe.trade/api/stats")
+                    except:
+                        await message.channel.send(f"{message.author.mention} Voting list is unavailable at this time")
+                        return
+                    data = response.json()
+                    embed = discord.Embed(title="Voting list for vote.safe.trade", url="https://vote.safe.trade", color=0x131afe)
+                    embed.set_author(name="Safe.TradeBot", url="http://www.safecoin.org",
+                                    icon_url="https://safe.trade/assets/logo2-f90245b6bdcfa4f7582e36d0bc7c69d513934aa8c5a1c6cbc884ef91768bda00.png")
+                    embed.add_field(name="Round #{} ending on {}".format(data["round"]["number"], datetime.date.fromtimestamp(data["round"]["endDate"]).strftime("%h %d %Y")), value="󠀠", inline=False)
+                    s = max(8, max(len(item["name"]) for item in data["items"]))
+                    v = max(5, max(len(item["votes"]) for item in data["items"]))
+                    embed.add_field(name="Voting list", value="""
+```
++--+---------{t}-+------+------{j}-+
+|# | Currency{0} |Ticker| Votes{1} |
++--+---------{t}-+------+------{j}-+
+{votes}
++--+---------{t}-+------+------{j}-+
+```
+""".format(
+    " "*(s-8), " "*(v-5), t="-"*(s-8), j="-"*(v-5),
+    votes="\n".join("|{:<2d}| {:<{s}} | {:<4} | {:<{v}} |".format(item["topNumber"], item["name"], item["ticker"], item["votes"], s=s, v=v) for item in data["items"])
+), inline=False)
+                    await message.channel.send(f"{message.author.mention} Here are the current vote results for Safe.Trade", embed=embed)
                 elif re.match(r"^\$[a-zA-Z]{3,}(?:\/?[a-zA-Z]{3,})?$", command):
                     pair = message.content[1:].upper()
                     for market in self.markets:
