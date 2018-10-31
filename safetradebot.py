@@ -31,6 +31,7 @@ class Bot(discord.Client):
                                     icon_url="https://safe.trade/assets/logo2-f90245b6bdcfa4f7582e36d0bc7c69d513934aa8c5a1c6cbc884ef91768bda00.png")
                     embed.add_field(name="$markets", value="List all available markets on Safe.Trade", inline=False)
                     embed.add_field(name="$<market>", value="Trade stats for the market you choose ($safebtc for SAFE/BTC market, $xsgsafe for XSG/SAFE market and so on)", inline=False)
+                    embed.add_field(name="$votes", value="Actual voting list of https://vote.safe.trade/", inline=False)
                     await message.author.send(f"Hi {message.author.mention}. Here are the commands for Safe.TradeBot", embed=embed)
                 elif command == "$markets":
                     if not isinstance(message.channel, discord.DMChannel):
