@@ -91,7 +91,10 @@ class Bot(discord.Client):
                     except:
                         percentage = 0
                     else:
-                        percentage = 100-100*response.json()[0][3]/float(ticker.get('last'))
+                        if not response.json():
+                            percentage = 0
+                        else:
+                            percentage = 100-100*response.json()[0][3]/float(ticker.get('last'))
 
                     time = datetime.datetime.fromtimestamp(data.get('at')).strftime('%Y-%m-%d %H:%M:%S')
 
